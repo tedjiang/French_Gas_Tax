@@ -1,0 +1,45 @@
+---
+title: "HW2"
+author: "Yingfei Jiang"
+date: "4/25/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+
+raw_df <- read_csv("Gas_Data.csv")
+```
+
+```{r}
+high_lm <- lm(Price_Dollars ~ Q_High_Gallons_per_Day, data = raw_df) #Linear regression of high income ppl
+c_high <- high_lm$coefficients[1] #Storing the coefficients into variables for late use
+k_high <- high_lm$coefficients[2]
+
+low_lm <- lm(Price_Dollars ~ Q_Low_Gallons_per_Day, data = raw_df) #Linear regression of low income ppl
+c_low <- low_lm$coefficients[1]
+k_low <- low_lm$coefficients[2]
+```
+
+```{r}
+
+plot_raw <- ggplot(data = data.frame(x = 0), mapping = aes(x = x)) #Dummy plot
+
+func_high <- function(x) k_high*x + c_high
+
+func_low <- function(x) k_low*x + c_low
+
+plot_raw + 
+  stat_function(fun = func_high, mapping = aes(color = "high income")) +
+  stat_function(fun = func_low, mapping = aes(color = "low income")) +
+  xlim(0, 200000)+
+  ylim(0, 25)
+  
+
+
+```
+
